@@ -1,0 +1,108 @@
+/* Paleta de colores apaciguada y variables */
+:root {
+    --bg-color: #f7f9f9; /* Gris muy clarito y cálido */
+    --primary-color: #84a9ac; /* Verde salvia / Teal suave (Relajante) */
+    --primary-hover: #6b8c8f;
+    --accent-color: #e4b7a0; /* Terracota pastel suave para contrastar */
+    --text-main: #4a4e69; /* Gris azulado oscuro (menos agresivo que el negro) */
+    --text-muted: #9ca3af;
+    --card-bg: #ffffff;
+    --border-color: #e5e7eb;
+    --transition-speed: 0.4s;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-main);
+    line-height: 1.6;
+    overflow-x: hidden;
+}
+
+/* --- ANIMACIONES --- */
+@keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* Clases para aplicar las animaciones al HTML */
+.animate-fade-up { animation: fadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+.animate-fade-in { animation: fadeIn 1s ease-out forwards; }
+.delay-1 { animation-delay: 0.1s; opacity: 0; }
+.delay-2 { animation-delay: 0.3s; opacity: 0; }
+
+/* --- COMPONENTES GLOBALES --- */
+/* Barra de Navegación */
+.navbar {
+    background-color: var(--card-bg);
+    padding: 15px 50px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 15px rgba(0,0,0,0.03);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+.navbar-brand { font-size: 24px; font-weight: 700; color: var(--primary-color); text-decoration: none; }
+.navbar-brand span { color: var(--accent-color); }
+.navbar-menu { display: flex; align-items: center; gap: 20px; }
+
+/* Botones flotantes y suaves */
+.btn {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: 600;
+    transition: all var(--transition-speed) ease;
+    text-decoration: none;
+    display: inline-block;
+}
+.btn:hover {
+    background-color: var(--primary-hover);
+    transform: translateY(-3px); /* El botón se eleva suavemente */
+    box-shadow: 0 8px 20px rgba(132, 169, 172, 0.3);
+}
+.btn-outline {
+    background-color: transparent;
+    color: var(--primary-color);
+    border: 1px solid var(--primary-color);
+}
+.btn-outline:hover { background-color: var(--primary-color); color: white; }
+
+/* Tarjetas (Cards y Login) */
+.card {
+    background-color: var(--card-bg);
+    padding: 35px;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.04);
+    border: 1px solid var(--border-color);
+    transition: transform var(--transition-speed) ease;
+}
+.card:hover {
+    transform: translateY(-5px);
+}
+
+/* Formularios estilizados */
+.form-group { margin-bottom: 20px; text-align: left; }
+.form-group label { display: block; margin-bottom: 8px; color: var(--text-main); font-size: 14px; font-weight: 500; }
+.form-group input {
+    width: 100%; padding: 12px 15px; border: 1px solid var(--border-color);
+    border-radius: 8px; font-size: 15px; background-color: #fcfcfc;
+    transition: all 0.3s ease;
+}
+.form-group input:focus {
+    outline: none; border-color: var(--primary-color);
+    box-shadow: 0 0 0 4px rgba(132, 169, 172, 0.15);
+    background-color: #fff;
+}
