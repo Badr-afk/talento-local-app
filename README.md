@@ -2,6 +2,12 @@
 
 TalentoLocal es una aplicación web integral diseñada para revolucionar la gestión y el seguimiento de las prácticas en empresas (FCT). Conecta de manera eficiente a los tres pilares fundamentales de la formación profesional: **Estudiantes, Empresas y Tutores Académicos**.
 
+## 🎯 Objetivos del Proyecto
+
+* **Digitalización completa:** Eliminar el papeleo tradicional automatizando la generación del Diario Oficial de FCT en PDF.
+* **Comunicación fluida:** Proporcionar canales directos y en tiempo real (salas de chat y notificaciones) entre tutores de institutos y tutores de empresa.
+* **Autonomía del alumno:** Facilitar la búsqueda, postulación y el seguimiento del progreso de horas de forma visual y accesible.
+
 ## ⚙️ Características Principales
 
 La plataforma cuenta con una arquitectura basada en roles (RBAC) que ofrece una experiencia personalizada para cada tipo de usuario:
@@ -32,13 +38,25 @@ Desarrollado con tecnologías modernas y estándares de la industria para garant
 
 La plataforma incluye un motor de notificaciones dinámico. Las alertas en tiempo real se disparan y conectan a los usuarios de manera automatizada:
 * Avisos a empresas cuando reciben nuevas candidaturas.
-* Notificaciones cruzadas en el chat interno (Tutor ↔ Empresa).
+* Notificaciones cruzadas en el chat interno (Tutor ↔ Empresa) mediante AJAX Polling.
 * Avisos a estudiantes cuando sus horas de prácticas son oficialmente activadas.
 
-## 🚀 Instalación y Despliegue Local
+## 📸 Capturas de Pantalla
+
+![Panel del Alumno](public/img/alumno.png)
+*Vista del dashboard principal y progreso de horas.*
+
+![Generación de Diario PDF](public/img/diario.png)
+*Sistema de registro de jornadas y descarga del documento oficial.*
+
+![Chat en Tiempo Real](public/img/chat.png)
+*Sala de coordinación entre tutor académico y empresa.*
+
+## 🚀 Instrucciones de Instalación y Despliegue Local
 
 Sigue estos pasos para levantar el proyecto en tu entorno local:
 
-1. Clona el repositorio:
+1. **Clona el repositorio:**
    ```bash
    git clone [https://github.com/TuUsuario/talento-local-app.git](https://github.com/TuUsuario/talento-local-app.git)
+   cd talento-local-app

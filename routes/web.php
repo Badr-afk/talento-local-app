@@ -87,3 +87,48 @@ Route::post('/notificaciones/leer', function () {
     \App\Models\Notificacion::where('user_id', \Illuminate\Support\Facades\Auth::id())->update(['leida' => true]);
     return back();
 })->name('notificaciones.leerTodas');
+
+Route::get('/forgot-password', function () {
+    return view('auth.forgot-password');
+})->middleware('guest')->name('password.request');
+
+Route::post('/forgot-password', function (\Illuminate\Http\Request $request) {
+    // 1. Validamos que nos han enviado un email real
+    $request->validate(['email' => 'required|email']);
+
+    // 2. Le decimos a Laravel que envíe el enlace de recuperación
+    $status = \Illuminate\Support\Facades\Password::sendResetLink(
+        $request->only('email')
+    );
+
+    // 3. Devolvemos a la pantalla anterior con un mensaje de éxito o error
+    return back()->with('status', __($status));
+})->middleware('guest')->name('password.email');
+
+Route::get('/reset-password/{token}', function (string $token) {
+    return view('auth.reset-password', ['token' => $token]);
+})->middleware('guest')->name('password.reset');
+
+Route::post('/reset-password', function (\Illuminate\Http\Request $request) {
+    $request->validate([
+        'token' => 'required',
+        'email' => 'required|email',
+        'password' => 'required|min:8|confirmed',
+    ]);
+
+    $status = \Illuminate\Support\Facades\Password::reset(
+        $request->only('email', 'password', 'password_confirmation', 'token'),
+        function ($user, string $password) {
+            $user->forceFill([
+                'password' => \Illuminate\Support\Facades\Hash::make($password)
+            ])->setRememberToken(\Illuminate\Support\Str::random(60));
+            $user->save();
+        }
+    );
+
+    return $status == \Illuminate\Support\Facades\Password::PASSWORD_RESET
+        ? redirect()->route('login')->with('status', '¡Contraseña actualizada correctamente! Ya puedes iniciar sesión.')
+        : back()->withErrors(['email' => __($status)]);
+})->middleware('guest')->name('password.store');
+
+Route::get('/chat/{conversacion}/actualizar', [ChatController::class, 'actualizarMensajes'])->name('chat.actualizar');

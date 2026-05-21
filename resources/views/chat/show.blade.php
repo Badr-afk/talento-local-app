@@ -82,29 +82,13 @@
     <div class="chat-container">
         
         <div class="chat-messages" id="caja-mensajes">
-            @if($conversacion->mensajes->isEmpty())
-                <div style="text-align: center; color: var(--text-muted); margin-top: 50px;">
-                    <p>¡Sala creada! Escribe el primer mensaje para coordinar las prácticas.</p>
-                </div>
-            @else
-                @foreach($conversacion->mensajes as $mensaje)
-                    @php $esMio = $mensaje->user_id === Auth::id(); @endphp
-                    <div class="chat-fila {{ $esMio ? 'chat-mio' : 'chat-suyo' }}">
-                        <span style="font-size: 11px; color: var(--text-muted); margin-bottom: 4px; font-weight: 600;">
-                            {{ $mensaje->remitente->name }} - {{ $mensaje->created_at->format('H:i') }}
-                        </span>
-                        <div class="chat-burbuja {{ $esMio ? 'burbuja-mia' : 'burbuja-suya' }}">
-                            {{ $mensaje->cuerpo }}
-                        </div>
-                    </div>
-                @endforeach
-            @endif
+            @include('chat.partials.mensajes')
         </div>
 
         <div class="chat-input-area">
-            <form action="{{ route('chat.mensaje', $conversacion->id) }}" method="POST" style="display: flex; gap: 10px;">
+            <form action="{{ route('chat.mensaje', $conversacion->id) }}" method="POST" style="display: flex; gap: 10px;" id="form-mensaje">
                 @csrf
-                <input type="text" name="cuerpo" placeholder="Escribe tu mensaje aquí..." required class="form-input" style="border-radius: 20px; padding-left: 20px; border-color: var(--border-color);">
+                <input type="text" name="cuerpo" id="input-mensaje" placeholder="Escribe tu mensaje aquí..." required class="form-input" style="border-radius: 20px; padding-left: 20px; border-color: var(--border-color); flex-grow: 1;">
                 <button type="submit" class="btn" style="border-radius: 20px; padding: 10px 25px;">
                     Enviar ➔
                 </button>
@@ -115,10 +99,71 @@
 </div>
 
 <script>
-    // Script para que al entrar al chat, la vista baje automáticamente hasta el último mensaje
-    window.onload = function() {
-        var cajaMensajes = document.getElementById('caja-mensajes');
-        cajaMensajes.scrollTop = cajaMensajes.scrollHeight;
+    // Variable para controlar si el usuario ha hecho scroll hacia arriba
+    let usuarioHizoScroll = false;
+    const cajaMensajes = document.getElementById('caja-mensajes');
+
+    // Función para bajar al último mensaje
+    function scrollAlFondo() {
+        if (!usuarioHizoScroll) {
+            cajaMensajes.scrollTop = cajaMensajes.scrollHeight;
+        }
     }
+
+    // Detectar si el usuario mueve el scroll hacia arriba
+    cajaMensajes.addEventListener('scroll', function() {
+        // Si está a más de 50px del fondo, consideramos que está leyendo mensajes antiguos
+        const distanciaAlFondo = cajaMensajes.scrollHeight - cajaMensajes.scrollTop - cajaMensajes.clientHeight;
+        usuarioHizoScroll = distanciaAlFondo > 50;
+    });
+
+    window.onload = function() {
+        scrollAlFondo();
+    }
+
+    // ACTUALIZACIÓN EN TIEMPO REAL (AJAX Polling)
+    setInterval(function() {
+        fetch("{{ route('chat.actualizar', $conversacion->id) }}")
+            .then(response => {
+                if (!response.ok) throw new Error('Error de red');
+                return response.text();
+            })
+            .then(html => {
+                // Comprobamos si hay mensajes nuevos (si el HTML ha cambiado)
+                if(cajaMensajes.innerHTML !== html) {
+                    cajaMensajes.innerHTML = html;
+                    // Solo hacemos auto-scroll si el usuario no estaba leyendo arriba
+                    scrollAlFondo();
+                }
+            })
+            .catch(error => console.error('Error al actualizar chat:', error));
+    }, 3000); // Se actualiza cada 3 segundos
+
+    // Envío por AJAX (Opcional, para que ni siquiera recargue al enviar)
+    document.getElementById('form-mensaje').addEventListener('submit', function(e) {
+        e.preventDefault(); // Evitamos que el formulario recargue la página
+        
+        const form = this;
+        const input = document.getElementById('input-mensaje');
+        const formData = new FormData(form);
+
+        fetch(form.action, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        }).then(() => {
+            input.value = ''; // Limpiamos la caja de texto
+            // Forzamos una actualización inmediata
+            fetch("{{ route('chat.actualizar', $conversacion->id) }}")
+                .then(response => response.text())
+                .then(html => {
+                    cajaMensajes.innerHTML = html;
+                    usuarioHizoScroll = false; // Reseteamos
+                    scrollAlFondo();
+                });
+        });
+    });
 </script>
 @endsection

@@ -28,13 +28,6 @@
         </a>
         @endif
     </form>
-    ```
-
-    Guarda ambos archivos. Ve a tu tablón de anuncios y escribe algo en la barra, como "DAW" o "Frontend" (asegúrate de tener ofertas publicadas con esas palabras).
-
-    Verás que el tablón se filtra en tiempo real y, si le das al botón de "Limpiar", vuelve a mostrar todo el catálogo.
-
-    Cuando verifiques que el buscador va fino como la seda, me das luz verde y saltamos a la **Opción B (Generación de PDFs del diario)**, para la cual tendremos que instalar un paquete nuevo en la consola. ¿Funciona bien el filtro?
 
     @if($ofertas->isEmpty())
     <div class="card animate-fade-up" style="text-align: center; padding: 50px;">

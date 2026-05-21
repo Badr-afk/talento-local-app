@@ -122,4 +122,9 @@ class ChatController extends Controller
 
         return view('empresa.chats', compact('chats'));
     }
+    public function actualizarMensajes($id)
+    {
+        $conversacion = Conversacion::with('mensajes.remitente')->findOrFail($id);
+        return view('chat.partials.mensajes', compact('conversacion'));
+    }
 }
